@@ -1,17 +1,18 @@
 # General imports
 import os
-import time
 import typing
 from discord.ext import commands
 import discord
 from dotenv import load_dotenv
 import rich
 
+
 # Init bot and env variables
 load_dotenv()
 TOKEN = os.getenv('BOT_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
 
@@ -60,6 +61,5 @@ async def sync(
             ret += 1
 
     await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
-
 
 bot.run(TOKEN)
