@@ -153,3 +153,4 @@ cython_debug/
 
 data/db.sqlite
 .vscode
+sqlite3.exe
