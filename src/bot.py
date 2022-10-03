@@ -38,7 +38,7 @@ async def on_ready():
     Choice(name='Database', value='database'),
     Choice(name='Init Server', value='initserver'),
 ])
-async def reload(interaction: discord.Interaction, cog: Choice[str]):
+async def reload(interaction: discord.Interaction, cog: Choice[str]) -> None:
     try:
         await bot.reload_extension(f'cogs.{cog.value}')
         await interaction.response.send_message(f'Extension {cog.value} reloaded!', ephemeral=True)
