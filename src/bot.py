@@ -3,6 +3,8 @@ import os
 import typing
 from discord.ext import commands
 import discord
+from discord import app_commands
+from discord.app_commands import Choice
 from dotenv import load_dotenv
 import rich
 
@@ -26,6 +28,22 @@ async def on_ready():
     await bot.tree.sync(guild=discord.Object(id=981576035176964117))
     rich.print(
         f'[bold magenta]{bot.user.name}[/bold magenta] [bold green]successfully connected to the discord API![/bold green]')
+
+
+@commands.is_owner()
+@bot.tree.command(name='reload', description='Reload an Extension')
+@app_commands.choices(cog=[
+    Choice(name='Default', value='_default'),
+    Choice(name='Backup', value='backup'),
+    Choice(name='Database', value='database'),
+    Choice(name='Init Server', value='initserver'),
+])
+async def reload(interaction: discord.Interaction, cog: Choice[str]):
+    try:
+        await bot.reload_extension(f'cogs.{cog.value}')
+        await interaction.response.send_message(f'Extension {cog.value} reloaded!', ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message(f'Error while reloading Extension {cog.value}: {e}', ephemeral=True)
 
 
 @bot.command()

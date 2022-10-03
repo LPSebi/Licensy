@@ -1,9 +1,14 @@
-import aiosqlite
-import discord
+from time import time
 from discord.ext import commands
+from discord import app_commands
+import discord
+import aiosqlite
+import uuid
+import sys
+from constants.constants import embedErrorTitle, embedErrorColor, embedSuccessColor
 
 
-class initServer(commands.Cog):
+class initserver(commands.Cog):
     """Initialize a new discord guild to the Database."""
 
     def __init__(self, bot):
@@ -11,27 +16,44 @@ class initServer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        embed = discord.Embed(title="Hello, I'm Licensy!",
-                              description="I'm a bot that helps you manage and create licenses and products for your customer. To get started, please run the command `/init`. If you need help, please use the command `/help`.",
-                              color=0x00ff00)
+        embed = discord.Embed(
+            title="Hello, I'm Licensy!",
+            description="I'm a bot that helps you manage and create licenses and products for your customer. To get started, please run the command `/init`. If you need help, please use the command `/help`.",
+            color=0x00FF00,
+        )
         try:
             await guild.system_channel.send(embed=embed)
         except discord.Forbidden or AttributeError:
             try:
-                guild.owner.send(embed=embed)
+                await guild.owner.send(embed=embed)
             except discord.Forbidden or AttributeError:
                 pass
 
-    @discord.app_commands.command(name='init', description='Initialize the server to the database')
+    @app_commands.command(
+        name="init", description="Initialize the server to the database"
+    )
     async def init(self, interaction: discord.Interaction):
-        async with aiosqlite.connect('./data/db.sqlite') as db:
-            cursor = await db.cursor()
-            await cursor.execute('INSERT INTO guilds (guild_id, prefix) VALUES (?, ?)', (interaction.guild.id, "/"))
+        async with aiosqlite.connect("./data/db.sqlite") as db:
+            cursor = await db.execute("SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
+            if (await cursor.fetchone() is not None):
+                embed = discord.Embed(
+                    title=embedErrorTitle,
+                    description="This server is already initialized.",
+                    color=embedErrorColor,
+                )
+                return await interaction.response.send_message(embed=embed)
+            cursor = await db.execute(
+                "INSERT INTO guilds (uuid, id, date) VALUES (?, ?, ?)",
+                (str(uuid.uuid4()), interaction.guild.id, int(round(time()))),
+            )
             await db.commit()
         embed = discord.Embed(
-            title="Server initialized", description="The server has been initialized to the database.", color=0x00ff00)
-        await interaction.response.send_message(embed=embed)
+            title="Server initialized",
+            description="The server has been initialized to the database.",
+            color=embedSuccessColor,
+        )
+        return await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot):
-    await bot.add_cog(initServer(bot))
+    await bot.add_cog(initserver(bot))

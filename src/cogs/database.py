@@ -1,6 +1,7 @@
 import time
 import discord
 from discord.ext import commands
+from discord import app_commands
 import aiosqlite
 
 
@@ -8,13 +9,13 @@ class database(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @discord.app_commands.command(name='databasecheck', description='Check the database connection')
+    @app_commands.command(name='databasecheck', description='Check the database connection')
     async def databasecheck(self, interaction: discord.Interaction):
         async with aiosqlite.connect('./data/db.sqlite') as db:
             # get ping of db
             try:
                 time1 = time.time()
-                db.execute('SELECT * FROM `guilds`')
+                await db.execute('SELECT * FROM `guilds`')
                 time2 = time.time()
             except:
                 embed = discord.Embed(

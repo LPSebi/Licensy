@@ -38,6 +38,7 @@ class backup(commands.Cog):
             color=0xff0000)
         embed.add_field(name="Date", value=today.strftime(
             "%d.%m.%Y"), inline=False)
+
         embed.add_field(name="Time", value=_now, inline=False)
         embed.add_field(name="Size", value=str(
             os.stat("./data/temp/backup.sql").st_size) + " bytes", inline=False)
