@@ -1,12 +1,21 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import app_commands, ui
 from discord.app_commands import Choice
 from constants.constants import embedErrorFull, embedErrorTitle, embedErrorColor
 import aiosqlite
 
 
-class manageProduct(commands.Cog):
+class CreateProductModal(ui.Modal, title='Questionnaire Response'):
+    """The modal for creating a product."""  # TODO: Continue class
+    name = ui.TextInput(label='Name')
+    answer = ui.TextInput(label='Answer', style=discord.TextStyle.paragraph)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'Thanks for your response, {self.name}!', ephemeral=True)
+
+
+class ManageProduct(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -41,4 +50,4 @@ class manageProduct(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(manageProduct(bot))
+    await bot.add_cog(ManageProduct(bot))
