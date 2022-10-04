@@ -4,3 +4,4 @@ embedErrorColor = 0xff0000
 
 # Embed
 embedErrorTitle = "Error"
+embedSuccessTitle = "Success"
