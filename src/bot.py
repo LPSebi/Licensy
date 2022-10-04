@@ -36,7 +36,8 @@ async def on_ready():
     Choice(name='Default', value='_default'),
     Choice(name='Backup', value='backup'),
     Choice(name='Database', value='database'),
-    Choice(name='Init Server', value='initserver'),
+    Choice(name='Init Server', value='init_server'),
+    Choice(name='Manage Product', value='manage_product'),
 ])
 async def reload(interaction: discord.Interaction, cog: Choice[str]) -> None:
     try:
