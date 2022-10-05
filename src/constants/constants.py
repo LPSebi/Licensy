@@ -8,5 +8,7 @@ embedErrorTitle = "Error"
 embedSuccessTitle = "Success"
 embedErrorDescription = "An error has occurred. Please try again later."
 
+embedErrorInvalidPrice = "Please enter a valid price."
+
 embedErrorFull = discord.Embed(
     title=embedErrorTitle, description=embedErrorDescription, color=embedErrorColor)

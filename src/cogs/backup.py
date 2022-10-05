@@ -5,7 +5,7 @@ from discord.ext import commands, tasks
 import aiosqlite
 
 
-class Dackup(commands.Cog):
+class Backup(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.dbBackup.start()
