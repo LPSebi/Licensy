@@ -33,6 +33,13 @@ class manageProduct(commands.Cog):
 
                 await interaction.response.send_message('create')
             case 'edit':
+                with aiosqlite.connect('./data/db.sqlite') as db:
+                    cursor = db.execute(
+                        'SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
+                    if cursor.fetchone() is None:
+                        embed = discord.Embed(
+                            title=embedErrorTitle, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=embedErrorColor)
+                        return await interaction.response.send_message(embed=embed)
                 await interaction.response.send_message('edit')
             case 'delete':
                 await interaction.response.send_message('delete')
