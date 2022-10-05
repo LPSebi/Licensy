@@ -8,7 +8,7 @@ import sys
 from constants.constants import embedErrorTitle, embedErrorColor, embedSuccessColor
 
 
-class initserver(commands.Cog):
+class InitServer(commands.Cog):
     """Initialize a new discord guild to the Database."""
 
     def __init__(self, bot):
@@ -56,4 +56,4 @@ class initserver(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(initserver(bot))
+    await bot.add_cog(InitServer(bot))

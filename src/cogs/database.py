@@ -5,7 +5,7 @@ from discord import app_commands
 import aiosqlite
 
 
-class database(commands.Cog):
+class Database(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -28,4 +28,4 @@ class database(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(database(bot))
+    await bot.add_cog(Database(bot))
