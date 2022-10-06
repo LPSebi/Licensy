@@ -9,8 +9,6 @@ class Backup(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.dbBackup.start()
-        # self.db = await aiosqlite.connect('./data/db.sqlite')
-        # self.cursor = await self.db.cursor()
 
     @tasks.loop(hours=24)
     async def dbBackup(self):

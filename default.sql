@@ -8,26 +8,26 @@ CREATE TABLE IF NOT EXISTS `guilds`(
 
 CREATE TABLE IF NOT EXISTS `products`(
     `uuid` VARCHAR(40) NOT NULL,
-    `server_uuid` int(20) NOT NULL,
+    `guild_uuid` int(20) NOT NULL,
     `name` VARCHAR(30) NOT NULL,
     `price` int(10) NOT NULL,
     `description` VARCHAR(100) NOT NULL DEFAULT '',
     `date` int(30) NOT NULL,
 
     PRIMARY KEY (`uuid`),
-    FOREIGN KEY (`server_uuid`) REFERENCES `guilds`(`uuid`) ON DELETE CASCADE ON UPDATE CASCADE --if guild is deleted, delete all products of the guild
+    FOREIGN KEY (`guild_uuid`) REFERENCES `guilds`(`uuid`) ON DELETE CASCADE ON UPDATE CASCADE --if guild is deleted, delete all products of the guild
 );
 
 
 CREATE TABLE IF NOT EXISTS `customers`(
     `uuid` VARCHAR(40) NOT NULL, --random id
     `id` int(20) NOT NULL, --discord user id
-    `server_uuid` int(20) NOT NULL, --server id
+    `guild_uuid` int(20) NOT NULL, --server id
     `product_uuid` VARCHAR(40) NOT NULL, --product id SEE table products `uuid`
     `date` int(30) NOT NULL, --date time for logging (when customer was created)
 
     PRIMARY KEY (`uuid`),
-    FOREIGN KEY (`server_uuid`) REFERENCES `guilds`(`uuid`) ON DELETE CASCADE ON UPDATE CASCADE, --if guild is deleted, delete all customers of the guild
+    FOREIGN KEY (`guild_uuid`) REFERENCES `guilds`(`uuid`) ON DELETE CASCADE ON UPDATE CASCADE, --if guild is deleted, delete all customers of the guild
     FOREIGN KEY (`product_uuid`) REFERENCES `products`(`uuid`) ON DELETE CASCADE ON UPDATE CASCADE --if product is deleted, delete all customers of the product
 );
 
