@@ -36,7 +36,6 @@ class CreateProductModal(ui.Modal, title='Create Product'):
             await db.execute('INSERT INTO products (uuid, guild_uuid, name, price, description, date) VALUES (?, ?, ?, ?, ?, ?)',
                              (str(uuid.uuid4()), guild_uuid, self.name.value, int(self.price.value), self.description.value, int(round(time()))))
             await db.commit()
-            await db.close()
             # TODO: change
             return await interaction.response.send_message(f'Thanks for your response, {interaction.user.name}!', ephemeral=True)
 
@@ -164,7 +163,7 @@ class ManageProduct(commands.Cog):
                                 title=embedSuccessTitle, description="Here is the list of all products.", color=embedSuccessColor)
                             for product in products:
                                 embed.add_field(
-                                    name=product[2], value=f"Price: {str(product[3])} | UUID: {product[0]} | Description: {product[4]}", inline=False)
+                                    name=f"Name: **{product[2]}**", value=f"Price: **{str(product[3])}** | UUID: **{product[0]}** | Description: **{product[4]}**", inline=False)
                             return await interaction.response.send_message(embed=embed)
                 pass
             case _:
