@@ -4,6 +4,7 @@ from discord import app_commands, ui
 from discord.app_commands import Choice
 from constants.constants import embedErrorFull, embedErrorTitle, embedErrorColor, embedErrorInvalidPrice
 import aiosqlite
+import uuid
 
 
 class CreateProductModal(ui.Modal, title='Create Product'):
@@ -29,6 +30,10 @@ class CreateProductModal(ui.Modal, title='Create Product'):
                     title=embedErrorTitle, description="An error has occurred. Price must be a positive number.", color=embedErrorColor)
                 return await interaction.response.send_message(embed=embed)
             # TODO: import data to db
+            with aiosqlite.connect('./data/db.sqlite') as db:
+                cursor = await db.execute('SELECT * FROM guilds WHERE guild_id = ?', (interaction.guild.id,))
+                guild_uuid = await cursor.fetchone()[0]
+                await db.execute('INSERT INTO products (uuid, server_uuid, name, description, price) VALUES (?, ?, ?, ?, ?)', (uuid.uuid4(), guild_uuid, self.name.value, self.description.value, int(self.price.value)))
             return await interaction.response.send_message(f'Thanks for your response, {interaction.user.name}!', ephemeral=True)
 
 
