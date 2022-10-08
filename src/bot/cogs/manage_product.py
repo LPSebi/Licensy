@@ -102,6 +102,7 @@ class ManageProduct(commands.Cog):
     async def product(self, interaction: discord.Interaction, option1: Choice[str]):
         match option1.value:
             case 'create':
+                # TODO: Set product limit
                 async with aiosqlite.connect('./data/db.sqlite') as db:
                     cursor = await db.execute(
                         "SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
