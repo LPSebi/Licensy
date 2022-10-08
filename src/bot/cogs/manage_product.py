@@ -163,7 +163,7 @@ class ManageProduct(commands.Cog):
                                 title=embedSuccessTitle, description="Here is the list of all products.", color=embedSuccessColor)
                             for product in products:
                                 embed.add_field(
-                                    name=f"Name: **{product[2]}**", value=f"Price: **{str(product[3])}** | UUID: **{product[0]}** | Description: **{product[4]}**", inline=False)
+                                    name=f"{product[2]}", value=f"Price: **{str(product[3])}** | Description: **{product[4]}** | UUID: **{product[0]}**", inline=False)
                             return await interaction.response.send_message(embed=embed)
                 pass
             case _:

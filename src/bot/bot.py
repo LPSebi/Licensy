@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix='.', intents=intents)
 
 @bot.event
 async def on_ready():
-    for filename in os.listdir('./src/cogs'):
+    for filename in os.listdir('./src/bot/cogs'):
         if filename.endswith('.py') and not filename.startswith('_'):
             await bot.load_extension(f'cogs.{filename[:-3]}')
             rich.print(
