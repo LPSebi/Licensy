@@ -1,21 +1,25 @@
 import discord
 # Color
-embedErrorColor = 0xff0000
-embedWarningColor = 0xeed202
-embedSuccessColor = 0x00ff00
+EMBED_ERROR_COLOR = 0xff0000
+EMBED_WARNING_COLOR = 0xeed202
+EMBED_SUCCESS_COLOR = 0x00ff00
 
 # Embed
-embedErrorTitle = "Error"
-embedErrorDescription = "An error has occurred. Please try again later."
-embedErrorInvalidPrice = "Please enter a valid price."
+EMBED_ERROR_TITLE = "Error"
+EMBED_ERROR_DESCRIPTION = "An error has occurred. Please try again later."
+EMBED_ERROR_INVALID_PRICE = "Please enter a valid price."
 
-embedWarningTitle = "Warning"
-embedWarningDescription = "An error has occurred. This is a demo message, report this to the developers."
-
-
-embedSuccessTitle = "Success"
-embedSuccessDescription = "Success! This is a demo message, report this to the developers."
+EMBED_WARNING_TITLE = "Warning"
+EMBED_WARNING_DESCRIPTION = "An error has occurred. This is a demo message, report this to the developers."
 
 
-embedErrorFull = discord.Embed(
-    title=embedErrorTitle, description=embedErrorDescription, color=embedErrorColor)
+EMBED_SUCCESS_TITLE = "Success"
+EMBED_SUCCESS_DESCRIPTION = "Success! This is a demo message, report this to the developers."
+
+# Limits
+PRODUCT_LIMIT = 10
+
+
+# Full
+EMBED_ERROR_FULL = discord.Embed(
+    title=EMBED_ERROR_TITLE, description=EMBED_ERROR_DESCRIPTION, color=EMBED_ERROR_COLOR)

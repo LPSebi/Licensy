@@ -23,11 +23,11 @@ class CreateProductModal(ui.Modal, title='Create Product'):
             price = int(self.price.value)
         except ValueError:
             embed = discord.Embed(
-                title=embedErrorTitle, description=embedErrorInvalidPrice, color=embedErrorColor)
+                title=EMBED_ERROR_TITLE, description=EMBED_ERROR_INVALID_PRICE, color=EMBED_ERROR_COLOR)
             return await interaction.response.send_message(embed=embed)
         if int(price) < 0:
             embed = discord.Embed(
-                title=embedErrorTitle, description="An error has occurred. Price must be a positive number.", color=embedErrorColor)
+                title=EMBED_ERROR_TITLE, description="An error has occurred. Price must be a positive number.", color=EMBED_ERROR_COLOR)
             return await interaction.response.send_message(embed=embed)
         # TODO: import data to db
         async with aiosqlite.connect('./data/db.sqlite') as db:
@@ -55,11 +55,11 @@ class EditProductModal(ui.Modal, title='Edit Product'):
             price = int(self.price.value)
         except ValueError:
             embed = discord.Embed(
-                title=embedErrorTitle, description=embedErrorInvalidPrice, color=embedErrorColor)
+                title=EMBED_ERROR_TITLE, description=EMBED_ERROR_INVALID_PRICE, color=EMBED_ERROR_COLOR)
             return await interaction.response.send_message(embed=embed)
         if int(price) < 0:
             embed = discord.Embed(
-                title=embedErrorTitle, description="An error has occurred. Price must be a positive number.", color=embedErrorColor)
+                title=EMBED_ERROR_TITLE, description="An error has occurred. Price must be a positive number.", color=EMBED_ERROR_COLOR)
             return await interaction.response.send_message(embed=embed)
         # TODO: import data to db
         async with aiosqlite.connect('./data/db.sqlite') as db:
@@ -102,15 +102,22 @@ class ManageProduct(commands.Cog):
     async def product(self, interaction: discord.Interaction, option1: Choice[str]):
         match option1.value:
             case 'create':
-                # TODO: Set product limit
                 async with aiosqlite.connect('./data/db.sqlite') as db:
                     cursor = await db.execute(
                         "SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
+                    product_count = await db.execute("SELECT COUNT(*) FROM products WHERE guild_uuid = (SELECT uuid FROM guilds WHERE id = ?)", (interaction.guild.id,))
+                    product_count = await product_count.fetchone()
                     if await cursor.fetchone() is None:
                         embed = discord.Embed(
-                            title=embedErrorTitle, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=embedErrorColor)
+                            title=EMBED_ERROR_TITLE, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=EMBED_ERROR_COLOR)
                         await db.close()
                         return await interaction.response.send_message(embed=embed)
+                    # TODO: Set product limit !DONE!
+                    elif product_count[0] >= PRODUCT_LIMIT:
+                        embed = discord.Embed(
+                            title=EMBED_ERROR_TITLE, description="You have reached the maximum amount of products. Please delete one to create a new one.", color=EMBED_ERROR_COLOR)
+                        return await interaction.response.send_message(embed=embed)
+
                     else:
                         return await interaction.response.send_modal(CreateProductModal())
 
@@ -120,7 +127,7 @@ class ManageProduct(commands.Cog):
                         "SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
                     if await cursor.fetchone() is None:
                         embed = discord.Embed(
-                            title=embedErrorTitle, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=embedErrorColor)
+                            title=EMBED_ERROR_TITLE, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=EMBED_ERROR_COLOR)
                         await db.close()
                         return await interaction.response.send_message(embed=embed)
                     else:
@@ -131,13 +138,13 @@ class ManageProduct(commands.Cog):
                         products = await cursor.fetchall()
                         if len(products) == 0:
                             embed = discord.Embed(
-                                title=embedErrorTitle, description="There are no products to edit.", color=embedErrorColor)
+                                title=EMBED_ERROR_TITLE, description="There are no products to edit.", color=EMBED_ERROR_COLOR)
                             await db.close()
                             return await interaction.response.send_message(embed=embed)
                         else:
                             view = ConfirmEditProduct()
                             embed = discord.Embed(
-                                title=embedWarningTitle, description="The next input requires the product uuid. Please make sure you have it.\nYou can get it by running `/products list`", color=embedWarningColor)
+                                title=EMBED_WARNING_TITLE, description="The next input requires the product uuid. Please make sure you have it.\nYou can get it by running `/products list`", color=EMBED_WARNING_COLOR)
                             await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
                             # return await interaction.response.send_modal(EditProductModal())
             case 'delete':
@@ -148,7 +155,7 @@ class ManageProduct(commands.Cog):
                     cursor = await db.execute('SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
                     if await cursor.fetchone() is None:
                         embed = discord.Embed(
-                            title=embedErrorTitle, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=embedErrorColor)
+                            title=EMBED_ERROR_TITLE, description="This server is not initialized. Please run the command `/init` to initialize the server.", color=EMBED_ERROR_COLOR)
                         return await interaction.response.send_message(embed=embed)
                     else:
                         current_guild = await db.execute('SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
@@ -157,18 +164,18 @@ class ManageProduct(commands.Cog):
                         products = await cursor.fetchall()
                         if len(products) == 0:
                             embed = discord.Embed(
-                                title=embedErrorTitle, description="There are no products to list.", color=embedErrorColor)
+                                title=EMBED_ERROR_TITLE, description="There are no products to list.", color=EMBED_ERROR_COLOR)
                             return await interaction.response.send_message(embed=embed)
                         else:
                             embed = discord.Embed(
-                                title=embedSuccessTitle, description="Here is the list of all products.", color=embedSuccessColor)
+                                title=EMBED_SUCCESS_TITLE, description="Here is the list of all products.", color=EMBED_SUCCESS_COLOR)
                             for product in products:
                                 embed.add_field(
                                     name=f"{product[2]}", value=f"Price: **{str(product[3])}** | Description: **{product[4]}** | UUID: **{product[0]}**", inline=False)
                             return await interaction.response.send_message(embed=embed)
                 pass
             case _:
-                await interaction.response.send_message(embed=embedErrorFull)
+                await interaction.response.send_message(embed=EMBED_ERROR_FULL)
 
 
 async def setup(bot):

@@ -1,3 +1,5 @@
+--EX: INSERT INTO products (uuid, guild_uuid, name, price, description, date) VALUES ("12323112114541123123454542331", "b2b6768e-1442-46ee-b325-27358094fdf6", "fortnite4", 12, "fortnite11", 123123)
+
 CREATE TABLE IF NOT EXISTS `guilds`(
     `uuid` VARCHAR(40) NOT NULL, -- random
     `id` int(20) NOT NULL, --server id 

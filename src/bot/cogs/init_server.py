@@ -5,7 +5,7 @@ import discord
 import aiosqlite
 import uuid
 import sys
-from constants.constants import embedErrorTitle, embedErrorColor, embedSuccessColor
+from constants.constants import EMBED_ERROR_TITLE, EMBED_ERROR_COLOR, EMBED_SUCCESS_COLOR
 
 
 class InitServer(commands.Cog):
@@ -37,9 +37,9 @@ class InitServer(commands.Cog):
             cursor = await db.execute("SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
             if (await cursor.fetchone() is not None):
                 embed = discord.Embed(
-                    title=embedErrorTitle,
+                    title=EMBED_ERROR_TITLE,
                     description="This server is already initialized.",
-                    color=embedErrorColor,
+                    color=EMBED_ERROR_COLOR,
                 )
                 return await interaction.response.send_message(embed=embed)
             cursor = await db.execute(
@@ -50,7 +50,7 @@ class InitServer(commands.Cog):
         embed = discord.Embed(
             title="Server initialized",
             description="The server has been initialized to the database.",
-            color=embedSuccessColor,
+            color=EMBED_SUCCESS_COLOR,
         )
         return await interaction.response.send_message(embed=embed)
 

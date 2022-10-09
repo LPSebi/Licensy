@@ -40,11 +40,12 @@ class Backup(commands.Cog):
         embed.add_field(name="Time", value=_now, inline=False)
         embed.add_field(name="Size", value=str(
             os.stat("./data/temp/backup.sql").st_size) + " bytes", inline=False)
-        embed.add_field(name="Tables", value=tablesCursor, inline=False)
+        embed.add_field(name="Tables", value=', '.join(
+            [str(x) for t in tablesCursor for x in t]), inline=False)
         embed.add_field(name="Guild table rows",
-                        value=guildTableRowsCursor, inline=False)
+                        value=guildTableRowsCursor[0][0], inline=False)
         embed.add_field(name="licenses table rows",
-                        value=productsTableRowsCursor, inline=False)
+                        value=productsTableRowsCursor[0][0], inline=False)
 
         with open('./data/temp/backup.sql', 'r'):
             await _channel.send(file=_file, embed=embed)
