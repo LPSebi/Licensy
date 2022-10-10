@@ -26,7 +26,7 @@ class Backup(commands.Cog):
         channelId = 1026064413377187850
         _channel = await self.bot.fetch_channel(channelId)
         _now = datetime.now().time()
-        os.system(".\sqlite3 ./data/db.sqlite .dump > ./data/temp/backup.sql")
+        os.system(".\\sqlite3 ./data/db.sqlite .dump > ./data/temp/backup.sql")
         _file = discord.File("./data/temp/backup.sql")
         _file.filename = f"SPOILER_backup.sql"
 
