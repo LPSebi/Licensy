@@ -61,14 +61,12 @@ class EditProductModal(ui.Modal, title='Edit Product'):
             embed = discord.Embed(
                 title=EMBED_ERROR_TITLE, description="An error has occurred. Price must be a positive number.", color=EMBED_ERROR_COLOR)
             return await interaction.response.send_message(embed=embed)
-        # TODO: import data to db
         async with aiosqlite.connect('./data/db.sqlite') as db:
             current_guild = await db.execute('SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
             guild_uuid = (await current_guild.fetchone())[0]
             await db.execute('INSERT INTO products (uuid, guild_uuid, name, price, description, date) VALUES (?, ?, ?, ?, ?, ?)',
                              (str(uuid.uuid4()), guild_uuid, self.name.value, int(self.price.value), self.description.value, int(round(time()))))
             await db.commit()
-            # TODO: change
             return await interaction.response.send_message(f'Thanks for your response, {interaction.user.name}!', ephemeral=True)
 
 
@@ -173,7 +171,6 @@ class ManageProduct(commands.Cog):
                                 embed.add_field(
                                     name=f"{product[2]}", value=f"Price: **{str(product[3])}** | Description: **{product[4]}** | UUID: **{product[0]}**", inline=False)
                             return await interaction.response.send_message(embed=embed)
-                pass
             case _:
                 await interaction.response.send_message(embed=EMBED_ERROR_FULL)
 

@@ -1,22 +1,22 @@
-from flask import Flask
-import aiosqlite
+from fastapi import FastAPI
+import uvicorn
 
-flask = Flask(__name__)
+app = FastAPI()
 
 
-@flask.get('/licensy')
+@app.get('/licensy')
 async def info():
     return 'Licensy is a discord bot that allows you to manage custom licenses'
 
 
-@flask.get('/licensy/tos')
+@app.get('/licensy/tos')
 async def tos():
     return 'Terms of Service'
 
 
-@flask.get('/licensy/privacy')
+@app.get('/licensy/privacy')
 async def privacy():
     return 'Privacy Policy'
 
-
-flask.run()
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8080)
