@@ -9,12 +9,17 @@ EMBED_ERROR_TITLE = "Error"
 EMBED_ERROR_DESCRIPTION = "An error has occurred. Please try again later."
 EMBED_ERROR_INVALID_PRICE = "Please enter a valid price."
 
+EMBED_ERROR_DESCRIPTION_MAX_PRODUCTS = "You have reached the maximum amount of products. Please delete one to create a new one."
+EMBED_ERROR_DESCRIPTION_NOT_INITIALIZED = "This server is not initialized. Please run the command `/init` to initialize the server."
+
+
 EMBED_WARNING_TITLE = "Warning"
 EMBED_WARNING_DESCRIPTION = "An error has occurred. This is a demo message, report this to the developers."
 
 
 EMBED_SUCCESS_TITLE = "Success"
 EMBED_SUCCESS_DESCRIPTION = "Success! This is a demo message, report this to the developers."
+
 
 # Limits
 PRODUCT_LIMIT = 10
