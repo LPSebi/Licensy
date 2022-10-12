@@ -3,7 +3,6 @@ from typing import List
 import discord
 from discord.ext import commands
 from discord import app_commands, ui
-from discord.app_commands import Choice
 from constants.constants import *
 import aiosqlite
 import uuid
