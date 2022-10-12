@@ -77,19 +77,26 @@ class Confirm(ui.View):
 
     @ui.button(label='Confirm', style=discord.ButtonStyle.red)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        embed = discord.Embed(title=EMBED_CANCELED_TITLE,
-                              description=EMBED_CANCELED_DESCRIPTION, color=EMBED_CANCELED_COLOR)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        embed = discord.Embed(title=EMBED_CONFIRMED_TITLE,
+                              description=EMBED_CONFIRMED_DESCRIPTION, color=EMBED_CONFIRMED_COLOR)
+
         self.value = True
+        for i in self.children:
+            i.disabled = True
+        await interaction.response.edit_message(view=self)
+        await interaction.followup.send(embed=embed, ephemeral=True)
         self.stop()
 
     @discord.ui.button(label='Cancel', style=discord.ButtonStyle.grey)
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
-        embed = discord.Embed(title=EMBED_CONFIRMED_TITLE,
-                              description=EMBED_CONFIRMED_DESCRIPTION, color=EMBED_CONFIRMED_COLOR)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        embed = discord.Embed(title=EMBED_CANCELED_TITLE,
+                              description=EMBED_CANCELED_DESCRIPTION, color=EMBED_CANCELED_COLOR)
         self.value = False
-        await self.stop()
+        for i in self.children:
+            i.disabled = True
+        await interaction.response.edit_message(view=self)
+        await interaction.followup.send(embed=embed, ephemeral=True)
+        self.stop()
 
 
 @app_commands.guild_only()

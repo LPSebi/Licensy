@@ -18,7 +18,7 @@ class InitServer(commands.Cog):
     async def on_guild_join(self, guild):
         embed = discord.Embed(
             title="Hello, I'm Licensy!",
-            description="I'm a bot that helps you manage and create licenses and products for your customer. To get started, please run the command `/init`. If you need help, please use the command `/help`.",
+            description="I'm a bot that helps you manage and create licenses and products for your customer. To get started, please run the command `/init`.",
             color=0x00FF00,
         )
         try:
