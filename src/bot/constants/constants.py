@@ -3,6 +3,8 @@ import discord
 EMBED_ERROR_COLOR = 0xff0000
 EMBED_WARNING_COLOR = 0xeed202
 EMBED_SUCCESS_COLOR = 0x00ff00
+EMBED_CONFIRMED_COLOR = 0x00ff00
+EMBED_CANCELED_COLOR = 0xff0000
 
 # Embed
 EMBED_ERROR_TITLE = "Error"
@@ -19,6 +21,14 @@ EMBED_WARNING_DESCRIPTION = "An error has occurred. This is a demo message, repo
 
 EMBED_SUCCESS_TITLE = "Success"
 EMBED_SUCCESS_DESCRIPTION = "Success! This is a demo message, report this to the developers."
+
+
+EMBED_CONFIRMED_TITLE = "Confirmed"
+EMBED_CONFIRMED_DESCRIPTION = "Confirmed! Thank you for confirming your choice."
+
+
+EMBED_CANCELED_TITLE = "Canceled"
+EMBED_CANCELED_DESCRIPTION = "Canceled! Thank you for canceling your choice."
 
 
 # Limits
