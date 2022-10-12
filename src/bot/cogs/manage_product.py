@@ -71,13 +71,14 @@ class EditProductModal(ui.Modal, title='Edit Product'):
             return await interaction.response.send_message(f'Thanks for your response, {interaction.user.name}!', ephemeral=True)
 
 
-class ConfirmEditProduct(ui.View):
+class Confirm(ui.View):
     def __init__(self):
         super().__init__()
 
-    @ui.button(label='Confirm', style=discord.ButtonStyle.green)
+    @ui.button(label='Confirm', style=discord.ButtonStyle.red)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(EditProductModal())
+        # await interaction.response.send_modal(EditProductModal())
+        await interaction.response.send_message('Confirmed', ephemeral=True)
         self.stop()
 
     @discord.ui.button(label='Cancel', style=discord.ButtonStyle.grey)
@@ -156,9 +157,42 @@ class ManageProduct(commands.GroupCog, name="product"):
                 else:
                     return await interaction.response.send_modal(EditProductModal())
 
+    @app_commands.autocomplete(product=product_autocomplete)
     @app_commands.command(name='delete', description='Delete a product for your server')
-    async def delete_product(self, interaction: discord.Interaction):
-        await interaction.response.send_message('delete')
+    async def delete_product(self, interaction: discord.Interaction, product: str):
+        view = Confirm()
+        await interaction.response.send_message('Are you sure you want to delete this product?', view=view)
+        view.wait()
+        if view.value == None:
+            await interaction.response.send_message('You did not respond in time.', ephemeral=True)
+        elif view.value:
+            async with aiosqlite.connect('./data/db.sqlite') as db:
+                cursor = await db.execute(
+                    "SELECT * FROM guilds WHERE id = ?", (interaction.guild.id,))
+                if await cursor.fetchone() is None:
+                    embed = discord.Embed(
+                        title=EMBED_ERROR_TITLE, description=EMBED_ERROR_DESCRIPTION_NOT_INITIALIZED, color=EMBED_ERROR_COLOR)
+                    await db.close()
+                    return await interaction.response.send_message(embed=embed)
+                else:
+                    # add all uuid of all products to a list with name
+                    current_guild = await db.execute('SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
+                    guild_uuid = (await current_guild.fetchone())[0]
+                    cursor = await db.execute('SELECT * FROM products WHERE guild_uuid = ?', (guild_uuid,))
+                    products = await cursor.fetchall()
+                    if len(products) == 0:
+                        embed = discord.Embed(
+                            title=EMBED_ERROR_TITLE, description="There are no products to delete.", color=EMBED_ERROR_COLOR)
+                        await db.close()
+                        return await interaction.response.send_message(embed=embed)
+                    else:
+                        await db.execute('DELETE FROM products WHERE uuid = ?', (product,))
+                        await db.commit()
+                        await interaction.response.send_message('Product deleted!', ephemeral=True)
+        else:
+            await interaction.response.send_message('Cancelled', ephemeral=True)
+
+            # await interaction.response.send_message('delete')
 
     @app_commands.command(name='list', description='List all products for your server')
     async def list_products(self, interaction: discord.Interaction):
