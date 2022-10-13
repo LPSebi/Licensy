@@ -4,7 +4,6 @@ from discord import app_commands
 import discord
 import aiosqlite
 import uuid
-import sys
 from constants.constants import EMBED_ERROR_TITLE, EMBED_ERROR_COLOR, EMBED_SUCCESS_COLOR
 
 
