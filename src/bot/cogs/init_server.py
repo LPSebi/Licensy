@@ -23,10 +23,10 @@ class InitServer(commands.Cog):
         )
         try:
             await guild.system_channel.send(embed=embed)
-        except discord.Forbidden or AttributeError:
+        except (discord.Forbidden, AttributeError):
             try:
                 await guild.owner.send(embed=embed)
-            except discord.Forbidden or AttributeError:
+            except (discord.Forbidden, AttributeError):
                 pass
 
     @app_commands.command(
