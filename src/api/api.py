@@ -32,11 +32,10 @@ async def exchange_code(request: Request, code: str):
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.post(DISCORD_API_ENDPOINT + "/oauth2/token", data=data, headers=headers) as resp:
-            resp.raise_for_status()
-            print(await resp.json())
-            return await resp.json()
+    async with aiohttp.ClientSession() as session, session.post(DISCORD_API_ENDPOINT + "/oauth2/token", data=data, headers=headers) as resp:
+        resp.raise_for_status()
+        print(await resp.json())
+        return await resp.json()
 
 
 @app.get('/licensy')
