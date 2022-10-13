@@ -18,7 +18,6 @@ class CreateProductModal(ui.Modal, title='Create Product'):
                          placeholder='Ex: 10 (no floating numbers, Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: discord.Interaction):
-        # print(self.name.value + self.description.value + str(type(self.price.value)))
         try:
             price = int(self.price.value)
         except ValueError:
@@ -50,7 +49,6 @@ class EditProductModal(ui.Modal, title='Edit Product'):
                          placeholder='Ex: 10 (no floating numbers, Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: discord.Interaction):
-        # print(self.name.value + self.description.value + str(type(self.price.value)))
         try:
             price = int(self.price.value)
         except ValueError:
