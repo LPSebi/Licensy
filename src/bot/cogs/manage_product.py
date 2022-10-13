@@ -106,7 +106,8 @@ class ManageProduct(commands.GroupCog, name="product"):
         self.bot = bot
         super().__init__()
 
-    async def product_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice]:
+    @staticmethod
+    async def product_autocomplete(interaction: discord.Interaction, current: str) -> List[app_commands.Choice]:
         async with aiosqlite.connect('./data/db.sqlite') as db:
             current_guild = await db.execute('SELECT * FROM guilds WHERE id = ?', (interaction.guild.id,))
             guild_uuid = (await current_guild.fetchone())[0]
