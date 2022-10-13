@@ -1,3 +1,0 @@
-DISCORD_API_ENDPOINT = "https://discord.com/api/v10"
-DISCORD_CLIENT_ID = "1026086249339035728"
-DISCORD_REDIRECT_URL = "http://127.0.0.1/licensy/cb"

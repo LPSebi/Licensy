@@ -1,0 +1,5 @@
+DISCORD_API_ENDPOINT = "https://discord.com/api/v10"
+DISCORD_CLIENT_ID = "1026086249339035728"
+DISCORD_REDIRECT_URL = "http://127.0.0.1/licensy/cb"
+DISCORD_SCOPES = "identify guilds"
+DISCORD_OAUTH2_URL = "https://discord.com/api/oauth2/authorize?client_id=1026086249339035728&redirect_uri=http%3A%2F%2F127.0.0.1/licensy/cb&response_type=code&scope=identify%20guilds"

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Guild</title>
+    </head>
+    <body>
+        <!-- show only info on top of page -->
+        <div>
+            <img
+                src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
+                class="guild-icon"
+                width="100px"
+                height="100px"
+                style="border-radius: 50%; transition: all 0.2s ease"
+            />
+            <h1>{{ guild.name }}</h1>
+            <!-- create a list of products-->
+            <ul>
+                {% if products != [] %}
+                    {% if products == "not init" %}
+                        <li>Products not initialized</li>
+                    {% else %}
+                        {% for product in products %}
+
+                        <li>{{ product[2] }}</li>
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                    <a>No products</a>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- style everything -->
+        <style>
+            body {
+                display: flex;
+                /* choose good font */
+                font-family: 'Roboto', sans-serif;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .center {
+                font-size: 1.5rem;
+                text-align: center;
+                vertical-align: middle;
+            }
+        </style>
+    </body>
+</html>

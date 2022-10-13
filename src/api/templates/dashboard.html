@@ -7,50 +7,42 @@
         <title>Licensy | Dashboard</title>
     </head>
     <body>
-        <!-- Add basic product Dashboard-->
-        <h1>Dashboard</h1>
-        <!-- Add logout button -->
-        <a href="/logout">
-            <button>Logout</button>
-        </a>
-        <!-- Add product button -->
-        <a href="/product/add">
-            <button>Add Product</button>
-        </a>
-        <!-- Add product list -->
-        <ul>
-            {% for product in products %}
-            <li>
-                <h3>{{ product.title }}</h3>
-                <p>{{ product.description }}</p>
-                <p>{{ product.price }}$</p>
-                <a href="/product/{{ product.id }}">
-                    <button>View</button>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+        <!-- select guild -->
+        <h1>Select a guild</h1>
+        <!-- loop through user's guilds -->
+        {% for guild in guilds %}
+        <!-- create image of server with name under. redirect on click -->
+        <div>
+            <a href="/licensy/guild/{{ guild.id }}">
+                <img
+                    src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
+                    class="guild-icon"
+                    width="100px"
+                    height="100px"
+                    style="border-radius: 50%; transition: all 0.2s ease"
+                />
+            </a>
+            <p class="center">{{ guild.name }}</p>
+        </div>
+        {% endfor %}
+
         <!-- style site-->
         <style>
             body {
                 display: flex;
+                /* choose good font */
+                font-family: 'Roboto', sans-serif;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
             }
-            button {
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                background-color: #7289da;
-                color: #fff;
-                font-size: 1.5rem;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            button:hover {
+            .guild-icon:hover {
                 transform: scale(1.1);
-                background-color: #5f73bd;
+            }
+            .center {
+                font-size: 1.5rem;
+                text-align: center;
+                vertical-align: middle;
             }
         </style>
     </body>
