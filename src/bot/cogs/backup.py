@@ -28,7 +28,7 @@ class Backup(commands.Cog):
         _now = datetime.now().time()
         os.system(".\\sqlite3 ./data/db.sqlite .dump > ./data/temp/backup.sql")
         _file = discord.File("./data/temp/backup.sql")
-        _file.filename = f"SPOILER_backup.sql"
+        _file.filename = "SPOILER_backup.sql"
 
         embed = discord.Embed(
             title="Database Backup",
