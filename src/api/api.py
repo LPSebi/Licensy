@@ -74,8 +74,6 @@ async def dashboard(request: Request):
     bot_guilds = await get_bot_guilds()
     mutual_guilds = await get_mutual_guilds(user_guilds, bot_guilds)
     print(request.session['token'])
-    # print(user_guilds)
-    # print(bot_guilds)
     print(mutual_guilds)
     return templates.TemplateResponse('dashboard.html', {'request': request, 'guilds': mutual_guilds})
 
