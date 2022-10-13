@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Licensy | Dashboard</title>
+    </head>
+    <body>
+        <!-- Add basic product Dashboard-->
+        <h1>Dashboard</h1>
+        <!-- Add logout button -->
+        <a href="/logout">
+            <button>Logout</button>
+        </a>
+        <!-- Add product button -->
+        <a href="/product/add">
+            <button>Add Product</button>
+        </a>
+        <!-- Add product list -->
+        <ul>
+            {% for product in products %}
+            <li>
+                <h3>{{ product.title }}</h3>
+                <p>{{ product.description }}</p>
+                <p>{{ product.price }}$</p>
+                <a href="/product/{{ product.id }}">
+                    <button>View</button>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- style site-->
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                background-color: #7289da;
+                color: #fff;
+                font-size: 1.5rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            button:hover {
+                transform: scale(1.1);
+                background-color: #5f73bd;
+            }
+        </style>
+    </body>
+</html>
