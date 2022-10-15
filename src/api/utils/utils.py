@@ -1,4 +1,5 @@
 from utils.constants import *
+from aiocache import cached
 from api import BOT_TOKEN
 import aiohttp
 import aiosqlite
@@ -24,6 +25,7 @@ async def get_bot_guilds():
         return await resp.json()
 
 
+@cached(ttl=550)
 async def get_mutual_guilds(user_guilds: list, bot_guilds: list):
     return [guild for guild in user_guilds if guild['id'] in map(lambda i: i['id'], bot_guilds) and (int(guild['permissions']) & 0x20) == 0x20]
 
