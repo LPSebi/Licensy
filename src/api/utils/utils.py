@@ -1,4 +1,3 @@
-from typing import Iterable, Literal
 from utils.constants import *
 from aiocache import cached
 from api import BOT_TOKEN
@@ -22,7 +21,6 @@ async def get_bot_guilds():
     }
     async with aiohttp.ClientSession() as session, session.get(DISCORD_API_ENDPOINT + "/users/@me/guilds", headers=headers) as resp:
         resp.raise_for_status()
-        # print(await resp.json())
         return await resp.json()
 
 
