@@ -1,9 +1,11 @@
-from typing import Coroutine
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 import uvicorn
 from utils.constants import *
 from utils.utils import *
@@ -16,6 +18,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="./src/api/templates")
 app.mount("/static", StaticFiles(directory="./src/api/static"), name="static")
 app.add_middleware(SessionMiddleware, secret_key="!secret")
+# limiter = Limiter(key_func=get_remote_address, default_limits=["1/second"])
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
@@ -91,4 +94,4 @@ async def guild(request: Request, guild_id: str):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=80)
+    uvicorn.run(app, host='127.0.0.1', port=80)

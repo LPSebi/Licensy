@@ -31,11 +31,10 @@ async def get_mutual_guilds(user_guilds: list, bot_guilds: list):
 
 async def get_guild_data(guild_id: int):
     async with aiohttp.ClientSession() as session, session.get(DISCORD_API_ENDPOINT + f"/guilds/{guild_id}", headers={"Authorization": f"Bot {BOT_TOKEN}"}) as resp:
-        try:
-            resp.raise_for_status()
-        except aiohttp.client_exceptions.ClientResponseError:
+        if resp.status != 200:
             return None
-        return await resp.json()
+        else:
+            return await resp.json()
 
 
 async def get_products(guild_id: int):
