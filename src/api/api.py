@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.middleware import SlowAPIMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 import uvicorn
@@ -18,9 +20,26 @@ app = FastAPI()
 templates = Jinja2Templates(directory="./src/api/templates")
 app.mount("/static", StaticFiles(directory="./src/api/static"), name="static")
 app.add_middleware(SessionMiddleware, secret_key="!secret")
-# limiter = Limiter(key_func=get_remote_address, default_limits=["1/second"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["5/1second"])
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+
+
+def rateLimitHandler(request: Request, exc: RateLimitExceeded):
+    response = JSONResponse(
+        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
+    )
+    response = templates.TemplateResponse(
+        "rate_limit.html", {'request': request, 'code': 429, 'message': response}, status_code=429)
+    response = request.app.state.limiter._inject_headers(
+        response, request.state.view_rate_limit
+    )
+    return response
+
+
+app.add_exception_handler(RateLimitExceeded, rateLimitHandler)
 
 
 async def exchange_code(request: Request, code: str):
@@ -57,6 +76,7 @@ async def privacy():
 
 
 @app.get('/licensy/login')
+# @limiter.limit("1/60second")
 async def login(request: Request):
     return templates.TemplateResponse('login.html', {'request': request})
 
