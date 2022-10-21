@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands, tasks
 import aiosqlite
+import io
 
 
 class Backup(commands.Cog):
@@ -26,7 +27,11 @@ class Backup(commands.Cog):
         channelId = 1026064413377187850
         _channel = self.bot.get_channel(channelId)
         _now = datetime.now().time()
-        os.system(".\\sqlite3 ./data/db.sqlite .dump > ./data/temp/backup.sql")
+        async with aiosqlite.connect('./data/db.sqlite') as db:
+            with io.open("./data/temp/backup.sql", "w") as backup:
+                async for line in db.iterdump():
+                    backup.write(line + "\n")
+
         _file = discord.File("./data/temp/backup.sql")
         _file.filename = "SPOILER_backup.sql"
 
