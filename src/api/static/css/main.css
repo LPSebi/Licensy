@@ -11,6 +11,8 @@ body {
 }
 
 .guild_icon_and_name {
+    width: 120%;
+    height: 150%;
     display: flex;
     flex-direction: column;
     justify-content: center;

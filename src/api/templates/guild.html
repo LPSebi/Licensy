@@ -15,6 +15,7 @@
 
     <link rel="icon" href="{{ url_for('static', path='/img/favicon.png') }}" type="image/png">
     <script src="{{ url_for('static', path='/js/script.js') }}"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <title>Licensy | Guild</title>
 </head>
 
@@ -35,7 +36,10 @@
         <!-- create a list of products-->
         <ul>
             {% if products != [] %} {% if products == "not init" %}
-            <li>Products not initialized</li>
+            <h1>Licensy is not initialized. </h1>
+            <h1>You can initialize it by using the /init command in your discord server!</h1>
+            <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_m9JXjh.json" background="transparent"
+                speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
             {% else %}
             <div class="row">
                 <div class="card-group">
@@ -63,10 +67,13 @@
                 </div>
             </div>
             {% endif %} {% else %}
-            <a>No products</a>
-            {% endif %}
         </ul>
     </div>
+    <h1>You don't have any products. </h1>
+    <h1>You can create one by using the discord bot!</h1>
+    <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_m9JXjh.json" background="transparent" speed="1"
+        style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+    {% endif %}
 
 
 
