@@ -108,6 +108,7 @@
             console.log(uuid);
             const url = `/licensy/api/delete_product/${uuid}`;
             fetch(url, {
+                credentials: "include",
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',

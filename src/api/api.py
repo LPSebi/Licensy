@@ -112,6 +112,8 @@ async def dashboard_route(request: Request):
 async def guild_route(request: Request, guild_id: str):
     if 'token' not in request.session:
         return RedirectResponse(DISCORD_OAUTH2_URL)
+    if await check_self_permission(request.session['token'], 981576035176964117) != True:
+        return RedirectResponse(LOGIN_PAGE_URL)
     guild_data = await get_guild_data(guild_id)
     if guild_data is None:
         return RedirectResponse('/licensy/dashboard')
@@ -122,12 +124,19 @@ async def guild_route(request: Request, guild_id: str):
 
 
 @app.delete('/licensy/api/delete_product/{uuid}')
-async def delete_product_route(uuid: str):
+@limiter.limit("5/10second")
+async def delete_product_route(request: Request, uuid: str):
     if await delete_product(uuid) == "not found":
         return JSONResponse({"error": "Product not found"}, status_code=404)
     else:
         return JSONResponse({"success": "Product deleted"}, status_code=200)
 
+
+# @app.get("/test")
+# async def _test_route(request: Request):
+#    if 'token' not in request.session:
+#        return RedirectResponse(DISCORD_OAUTH2_URL)
+#    return await check_self_permission(request.session['token'], 981576035176964117)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=80)

@@ -65,3 +65,23 @@ async def delete_product(uuid: str):
             await db.execute('DELETE FROM products WHERE uuid = ?', (uuid,))
             await db.commit()
             return "success"
+
+
+async def check_self_permission(token: str, guild_id: int):
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+    # request all guilds
+    async with aiohttp.ClientSession() as session, session.get(DISCORD_API_ENDPOINT + "/users/@me/guilds", headers=headers) as resp:
+        if resp.status == 429:
+            return "rate limited"
+        user_guilds = await resp.json()
+        # check if the guild is in the list
+        print(map(lambda i: i['id'], user_guilds))
+        if not str(guild_id) in map(lambda i: i['id'], user_guilds):
+            return False  # not in guild
+        # check if the user has the permission
+        elif not (int(list(filter(lambda i: i['id'] == str(guild_id), user_guilds))[0]['permissions']) & 0x20) == 0x20:
+            return False  # no permission
+        else:
+            return True  # success
