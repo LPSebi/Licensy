@@ -6,30 +6,74 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+
+    <link rel="icon" href="{{ url_for('static', path='/img/favicon.png') }}" type="image/png">
+    <script src="{{ url_for('static', path='/js/script.js') }}"></script>
     <title>Licensy | Guild</title>
 </head>
 
+
 <body>
+
     <!-- show only info on top of page -->
     <div>
-        <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512" class="guild-icon"
-            width="100px" height="100px" style="border-radius: 50%; transition: all 0.2s ease" />
-        <h1>{{ guild.name }}</h1>
+        <div class="container">
+            <div class="guild_icon_and_name">
+
+                <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
+                    class="guild-icon" width="100px" height="100px"
+                    style="border-radius: 50%; transition: all 0.2s ease" />
+                <h1>{{ guild.name }}</h1>
+            </div>
+        </div>
         <!-- create a list of products-->
         <ul>
             {% if products != [] %} {% if products == "not init" %}
             <li>Products not initialized</li>
-            {% else %} {% for product in products %}
+            {% else %}
+            <div class="row">
+                <div class="card-group">
+                    {% for product in products %}
+                    <div class="row-cols-2 row-cols-md-1 g-4 col-sm-120">
 
-            <li>{{ product[2] }}</li>
-            {% endfor %} {% endif %} {% else %}
+                        <div class="card"
+                            style="width: 18rem; background-color: var(--background_color_hover); margin: 0.5rem">
+                            <img src="https://img.freepik.com/free-vector/coming-soon-display-background-with-focus-light_1017-33741.jpg?w=360"
+                                class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product[2] }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ product[3] }} €</h6>
+                                <h6 class="card-subtitle mb-2 text-muted" id="uuid_{{ product[0] }}"
+                                    style="display: none;">{{ product[0] }}
+                                </h6>
+                                <p class="card-text">{{ product[4] }}</p>
+                                <a href="#" class="btn btn-danger" onclick="deleteProduct('{{ product[0] }}')">Delete
+                                    product</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %} {% else %}
             <a>No products</a>
             {% endif %}
         </ul>
     </div>
+
+
+
     <!-- style everything -->
     <style>
         body {
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -42,6 +86,15 @@
             vertical-align: middle;
         }
 
+        .container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* Dark mode */
         @media (prefers-color-scheme: dark) {
             body {
@@ -50,6 +103,28 @@
             }
         }
     </style>
+    <script type="text/javascript">
+        function deleteProduct(uuid) {
+            console.log(uuid);
+            const url = `/licensy/api/delete_product/${uuid}`;
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        document.getElementById(`uuid_${uuid}`).parentElement.parentElement.parentElement.remove();
+                    } else if (response.status == 404) {
+                        alert("Product not found");
+                    } else {
+                        alert("Something went wrong");
+                    }
+                });
+        }
+    </script>
 </body>
 
 </html>

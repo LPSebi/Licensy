@@ -1,3 +1,4 @@
+
 from utils.constants import *
 from aiocache import cached
 from api import BOT_TOKEN
@@ -10,8 +11,8 @@ async def get_user_guilds(token: str):
         "Authorization": f"Bearer {token}"
     }
     async with aiohttp.ClientSession() as session, session.get(DISCORD_API_ENDPOINT + "/users/@me/guilds", headers=headers) as resp:
-        resp.raise_for_status()
-        # print(await resp.json())
+        if resp.status == 429:
+            return "rate limited"
         return await resp.json()
 
 
@@ -20,7 +21,8 @@ async def get_bot_guilds():
         "Authorization": f"Bot {BOT_TOKEN}"
     }
     async with aiohttp.ClientSession() as session, session.get(DISCORD_API_ENDPOINT + "/users/@me/guilds", headers=headers) as resp:
-        resp.raise_for_status()
+        if resp.status == 429:
+            return "rate limited"
         return await resp.json()
 
 
@@ -52,3 +54,14 @@ async def get_products(guild_id: int):
             else:
                 # success
                 return products
+
+
+async def delete_product(uuid: str):
+    async with aiosqlite.connect('./data/db.sqlite') as db:
+        cursor = await db.execute('SELECT * FROM products WHERE uuid = ?', (uuid,))
+        if await cursor.fetchone() is None:
+            return "not found"
+        else:
+            await db.execute('DELETE FROM products WHERE uuid = ?', (uuid,))
+            await db.commit()
+            return "success"

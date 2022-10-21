@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -27,12 +27,12 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 
-def rateLimitHandler(request: Request, exc: RateLimitExceeded):
-    response = JSONResponse(
-        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
-    )
+def rateLimitHandler(request: Request):
+    # response = JSONResponse(
+    #     {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
+    # )
     response = templates.TemplateResponse(
-        "rate_limit.html", {'request': request, 'code': 429, 'message': response}, status_code=429)
+        "rate_limit.html", {'request': request, 'code': 429}, status_code=429)
     response = request.app.state.limiter._inject_headers(
         response, request.state.view_rate_limit
     )
@@ -59,30 +59,32 @@ async def exchange_code(request: Request, code: str):
         print(await resp.json())
         return await resp.json()
 
+# GENERAL PART
+
 
 @app.get('/licensy')
-async def info():
+async def info_route():
     return 'Licensy is a discord bot that allows you to manage custom licenses'
 
 
 @app.get('/licensy/tos')
-async def tos():
+async def tos_route():
     return 'Terms of Service'
 
 
 @app.get('/licensy/privacy')
-async def privacy():
+async def privacy_route():
     return 'Privacy Policy'
 
 
 @app.get('/licensy/login')
-# @limiter.limit("1/60second")
-async def login(request: Request):
+async def login_route(request: Request):
     return templates.TemplateResponse('login.html', {'request': request})
 
 
 @app.get('/licensy/cb')
-async def cb(request: Request, code: str):
+@limiter.limit("5/60second")
+async def cb_route(request: Request, code: str):
     # get token
     token = (await exchange_code(request, code))['access_token']
     # write token to session
@@ -91,10 +93,14 @@ async def cb(request: Request, code: str):
 
 
 @app.get('/licensy/dashboard')
-async def dashboard(request: Request):
+@limiter.limit("5/10second")
+async def dashboard_route(request: Request):
     if 'token' not in request.session:
         return RedirectResponse(DISCORD_OAUTH2_URL)
     user_guilds = await get_user_guilds(request.session['token'])
+    if user_guilds == "rate limited":
+        return templates.TemplateResponse(
+            "rate_limit.html", {'request': request, 'code': 429}, status_code=429)
     bot_guilds = await get_bot_guilds()
     mutual_guilds = await get_mutual_guilds(user_guilds, bot_guilds)
     print(request.session['token'])
@@ -103,7 +109,7 @@ async def dashboard(request: Request):
 
 
 @app.get('/licensy/guild/{guild_id}')
-async def guild(request: Request, guild_id: str):
+async def guild_route(request: Request, guild_id: str):
     if 'token' not in request.session:
         return RedirectResponse(DISCORD_OAUTH2_URL)
     guild_data = await get_guild_data(guild_id)
@@ -111,6 +117,16 @@ async def guild(request: Request, guild_id: str):
         return RedirectResponse('/licensy/dashboard')
     products = await get_products(guild_id)
     return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products})
+
+# API PART
+
+
+@app.delete('/licensy/api/delete_product/{uuid}')
+async def delete_product_route(uuid: str):
+    if await delete_product(uuid) == "not found":
+        return JSONResponse({"error": "Product not found"}, status_code=404)
+    else:
+        return JSONResponse({"success": "Product deleted"}, status_code=200)
 
 
 if __name__ == '__main__':

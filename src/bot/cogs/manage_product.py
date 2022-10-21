@@ -221,7 +221,7 @@ class ManageProduct(commands.GroupCog, name="product"):
                         title=EMBED_SUCCESS_TITLE, description="Here is the list of all products.", color=EMBED_SUCCESS_COLOR)
                     for product in products:
                         embed.add_field(
-                            name=f"{product[2]}", value=f"Price: **{str(product[3])}** | Description: **{product[4]}** | UUID: **{product[0]}**", inline=False)
+                            name=f"{product[2]}", value=f"Price: **{str(product[3])}** | Description: **{product[4]}**", inline=False)
                     return await interaction.response.send_message(embed=embed)
 
 
