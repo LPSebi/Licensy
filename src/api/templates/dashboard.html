@@ -18,21 +18,31 @@
     {% for guild in guilds %}
     <!-- create image of server with name under. redirect on click -->
     <div>
-        <div class="container">
-            <div class="guild_icon_and_name">
-                <a href="/licensy/guild/{{ guild.id }}">
+        <a href="/licensy/guild/{{ guild.id }}">
+            <div class="container">
+                <div class="guild_icon_and_name">
                     <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
                         class="guild-icon" width="100px" height="100px"
                         style="border-radius: 50%; transition: all 0.2s ease" />
-                </a>
-                <p class="center">{{ guild.name }}</p>
+                    <p class="center">{{ guild.name }}</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     {% endfor %}
 
     <!-- style site-->
     <style>
+        @-webkit-keyframes scaling {
+            0% {
+                -webkit-transform: scale(1.0);
+            }
+
+            10% {
+                -webkit-transform: scale(1.1);
+            }
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -40,7 +50,8 @@
             align-items: center;
         }
 
-        .guild-icon:hover {
+        .container:hover {
+            -webkit-animation: scaling 5s infinite alternate;
             transform: scale(1.1);
         }
 
@@ -65,6 +76,14 @@
                 background-color: var(--background_color);
                 color: #fff;
             }
+        }
+
+        a,
+        a:hover,
+        a:focus,
+        a:active {
+            text-decoration: none;
+            color: inherit;
         }
     </style>
 </body>
