@@ -14,24 +14,51 @@
 </head>
 
 <body>
-    <!-- select guild -->
-    <h1>Select a guild</h1>
-    <!-- loop through user's guilds -->
-    {% for guild in guilds %}
-    <!-- create image of server with name under. redirect on click -->
-    <div>
-        <a href="/licensy/guild/{{ guild.id }}">
-            <div class="container">
-                <div class="guild_icon_and_name">
-                    <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
-                        class="guild-icon" width="100px" height="100px"
-                        style="border-radius: 50%; transition: all 0.2s ease" />
-                    <p class="center">{{ guild.name }}</p>
-                </div>
+    <nav class="navbar navbar-expand navbar-dark bg-dark" aria-label="Second navbar example">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Always expand</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample02"
+                aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample02">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form>
+                    <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                </form>
             </div>
-        </a>
+        </div>
+    </nav>
+
+
+    <div class="selGuild">
+        <!-- select guild -->
+        <h1>Select a guild</h1>
+        <!-- loop through user's guilds -->
+        {% for guild in guilds %}
+        <!-- create image of server with name under. redirect on click -->
+        <div>
+            <a href="/licensy/guild/{{ guild.id }}">
+                <div class="container">
+                    <div class="guild_icon_and_name">
+                        <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png?size=512"
+                            class="guild-icon" width="100px" height="100px"
+                            style="border-radius: 50%; transition: all 0.2s ease" />
+                        <p class="center">{{ guild.name }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     <!-- style site-->
     <style>
@@ -45,7 +72,7 @@
             }
         }
 
-        body {
+        .selGuild {
             display: flex;
             flex-direction: column;
             justify-content: center;

@@ -27,15 +27,16 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 
-def rateLimitHandler(request: Request):
-    # response = JSONResponse(
-    #     {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
-    # )
-    response = templates.TemplateResponse(
-        "rate_limit.html", {'request': request, 'code': 429}, status_code=429)
+def rateLimitHandler(request: Request, exc: RateLimitExceeded):
+    response = JSONResponse(
+        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
+    )
     response = request.app.state.limiter._inject_headers(
         response, request.state.view_rate_limit
     )
+    print(request.state.view_rate_limit)
+    response = templates.TemplateResponse(
+        "rate_limit.html", {'request': request, 'code': 429, 'message': response}, status_code=429)
     return response
 
 

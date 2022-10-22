@@ -77,7 +77,6 @@ async def check_self_permission(token: str, guild_id: int):
             return "rate limited"
         user_guilds = await resp.json()
         # check if the guild is in the list
-        print(map(lambda i: i['id'], user_guilds))
         if not str(guild_id) in map(lambda i: i['id'], user_guilds):
             return False  # not in guild
         # check if the user has the permission

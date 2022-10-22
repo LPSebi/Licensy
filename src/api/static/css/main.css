@@ -1,9 +1,14 @@
-@import url('Rubik-Regular.ttf');
+/* @import url('Rubik-Regular.ttf'); */
 :root {
     --default_color: #7366ff;
     --default_color_hover: #5a4bd9;
     --background_color: #1d1e26;
     --background_color_hover: #2a2b36;
+}
+
+@font-face {
+    font-family: 'Rubik';
+    src: url('./Rubik-Regular.ttf') format('truetype');
 }
 
 body {
