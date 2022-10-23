@@ -19,7 +19,8 @@ load_dotenv()
 app = FastAPI()
 templates = Jinja2Templates(directory="./src/api/templates")
 app.mount("/static", StaticFiles(directory="./src/api/static"), name="static")
-app.add_middleware(SessionMiddleware, secret_key="!secret")
+app.add_middleware(SessionMiddleware,
+                   secret_key=os.getenv("CUSTOM_SECRET_KEY"))
 limiter = Limiter(key_func=get_remote_address, default_limits=["5/1second"])
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
@@ -137,7 +138,7 @@ async def delete_product_route(request: Request, uuid: str, token: str):
     print(guild_id)
     if is_token_allowed is False:
         return JSONResponse({'error': 'Forbidden', 'code': 403}, status_code=403)
-    elif is_token_allowed is "rate limited":
+    elif is_token_allowed == "rate limited":
         return templates.TemplateResponse("rate_limit.html", {'request': request, 'code': 429}, status_code=429)
     if await delete_product(uuid) == "not found":
         return JSONResponse({"error": "Product not found"}, status_code=404)
