@@ -113,7 +113,7 @@ async def dashboard_route(request: Request):
 async def guild_route(request: Request, guild_id: str):
     if 'token' not in request.session:
         return RedirectResponse(DISCORD_OAUTH2_URL)
-    if await check_self_permission(request.session['token'], 981576035176964117) != True:
+    if await check_self_permission(request.session['token'], guild_id) != True:
         return RedirectResponse(LOGIN_PAGE_URL)
     guild_data = await get_guild_data(guild_id)
     if guild_data is None:

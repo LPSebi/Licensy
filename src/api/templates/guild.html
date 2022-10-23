@@ -127,6 +127,8 @@
                         document.getElementById(`uuid_${uuid}`).parentElement.parentElement.parentElement.remove();
                     } else if (response.status == 404) {
                         alert("Product not found");
+                    } else if (response.status == 429) {
+                        alert("Rate Limited");
                     } else {
                         alert("Something went wrong");
                     }
