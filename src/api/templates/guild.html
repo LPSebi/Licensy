@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
@@ -16,11 +15,33 @@
     <link rel="icon" href="{{ url_for('static', path='/img/favicon.png') }}" type="image/png">
     <script src="{{ url_for('static', path='/js/script.js') }}"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
     <title>Licensy | Guild</title>
 </head>
 
 
 <body>
+
+    <nav class="navbar navbar-expand navbar-dark" aria-label="Second navbar example">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Licensy</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbars02"
+                aria-controls="navbars02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbars02">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/licensy/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+                <li class="nav-item">
+                    <a class="nav-link" href="/licensy/login">Logout</a>
+                </li>
+            </div>
+        </div>
+    </nav>
 
     <!-- show only info on top of page -->
     <div>
@@ -34,7 +55,7 @@
             </div>
         </div>
         <!-- create a list of products-->
-        <ul>
+        <ul id="productList">
             {% if products != [] %} {% if products == "not init" %}
             <h1>Licensy is not initialized. </h1>
             <h1>You can initialize it by using the /init command in your discord server!</h1>
@@ -48,8 +69,7 @@
 
                         <div class="card"
                             style="width: 18rem; background-color: var(--background_color_hover); margin: 0.5rem">
-                            <img src="https://img.freepik.com/free-vector/coming-soon-display-background-with-focus-light_1017-33741.jpg?w=360"
-                                class="card-img-top" alt="...">
+                            <img src="https://picsum.photos/286" loading="lazy" class="card-img-top" alt="demo image">
                             <div class="card-body">
                                 <h5 class="card-title">{{ product[2] }}</h5>
                                 <h6 class="card-subtitle mb-2 text-muted">{{ product[3] }} €</h6>
@@ -81,6 +101,10 @@
     <style>
         body {
             overflow-x: hidden;
+
+        }
+
+        #productList {
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -102,23 +126,24 @@
             align-items: center;
         }
 
-        /* Dark mode */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: var(--background_color);
-                color: #fff;
-            }
+        .selGuild {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     <script type="text/javascript">
         function deleteProduct(uuid) {
             console.log(uuid);
-            const url = `/licensy/api/delete_product/${uuid}`;
+            const token = '{{ token }}';
+            console.log(token);
+            const url = `/licensy/api/delete_product/${uuid}/${token}`;
             fetch(url, {
                 credentials: "include",
                 method: 'DELETE',
                 headers: {
-                    'Accept': 'application/json',
+                    //'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
             })

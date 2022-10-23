@@ -13,6 +13,8 @@
 
 body {
     font-family: 'Rubik', sans-serif;
+    background-color: var(--background_color);
+    color: #fff;
 }
 
 .guild_icon_and_name {
@@ -26,6 +28,14 @@ body {
     padding: 1rem;
     background-color: var(--background_color);
     border: 3px solid var(--background_color_hover);
+}
+
+li {
+    list-style-type: none;
+}
+
+nav {
+    background-color: var(--background_color_hover);
 }
 
 /* scrollbar */

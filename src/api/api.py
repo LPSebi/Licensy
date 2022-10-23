@@ -119,14 +119,26 @@ async def guild_route(request: Request, guild_id: str):
     if guild_data is None:
         return RedirectResponse('/licensy/dashboard')
     products = await get_products(guild_id)
-    return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products})
+    return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products, 'token': request.session['token']})
 
 # API PART
 
 
-@app.delete('/licensy/api/delete_product/{uuid}')
+@app.delete('/licensy/api/delete_product/{uuid}/{token}')
 @limiter.limit("5/10second")
-async def delete_product_route(request: Request, uuid: str):
+async def delete_product_route(request: Request, uuid: str, token: str):
+    print(uuid)
+    print(token)
+    guild_id = await get_guildId_from_product_uuid(uuid)
+    if guild_id is None:
+        return JSONResponse({'error': 'Product not found', 'code': 404}, status_code=404)
+    is_token_allowed = await check_self_permission(token, guild_id)
+    print(is_token_allowed)
+    print(guild_id)
+    if is_token_allowed is False:
+        return JSONResponse({'error': 'Forbidden', 'code': 403}, status_code=403)
+    elif is_token_allowed is "rate limited":
+        return templates.TemplateResponse("rate_limit.html", {'request': request, 'code': 429}, status_code=429)
     if await delete_product(uuid) == "not found":
         return JSONResponse({"error": "Product not found"}, status_code=404)
     else:

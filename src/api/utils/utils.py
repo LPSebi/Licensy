@@ -78,9 +78,25 @@ async def check_self_permission(token: str, guild_id: int):
         user_guilds = await resp.json()
         # check if the guild is in the list
         if not str(guild_id) in map(lambda i: i['id'], user_guilds):
+            print("not in guild")
             return False  # not in guild
         # check if the user has the permission
         elif not (int(list(filter(lambda i: i['id'] == str(guild_id), user_guilds))[0]['permissions']) & 0x20) == 0x20:
+            print("no permission")
             return False  # no permission
         else:
             return True  # success
+
+
+async def get_guildId_from_product_uuid(product_uuid):
+    async with aiosqlite.connect('./data/db.sqlite') as db:
+        cursor = await db.execute('SELECT * FROM products WHERE uuid = ?', (product_uuid,))
+        if await cursor.fetchone() is None:
+            return None
+        else:
+            current_product = await db.execute('SELECT * FROM products WHERE uuid = ?', (product_uuid,))
+            guild_uuid = (await current_product.fetchone())[1]
+            current_guild = await db.execute('SELECT * FROM guilds WHERE uuid = ?', (guild_uuid,))
+            guild_id = (await current_guild.fetchone())[1]
+            print(guild_id)
+            return guild_id
