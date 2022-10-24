@@ -1,3 +1,4 @@
+import base64
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -120,7 +121,7 @@ async def guild_route(request: Request, guild_id: str):
     if guild_data is None:
         return RedirectResponse('/licensy/dashboard')
     products = await get_products(guild_id)
-    return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products, 'token': request.session['token']})
+    return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products, 'token': base64.b64encode(bytes(request.session['token'], "utf-8"))})
 
 # API PART
 
@@ -130,6 +131,7 @@ async def guild_route(request: Request, guild_id: str):
 async def delete_product_route(request: Request, uuid: str, token: str):
     print(uuid)
     print(token)
+    token = str(base64.b64decode(token), "utf-8")
     guild_id = await get_guildId_from_product_uuid(uuid)
     if guild_id is None:
         return JSONResponse({'error': 'Product not found', 'code': 404}, status_code=404)
@@ -146,11 +148,18 @@ async def delete_product_route(request: Request, uuid: str, token: str):
         return JSONResponse({"success": "Product deleted"}, status_code=200)
 
 
-# @app.get("/test")
-# async def _test_route(request: Request):
-#    if 'token' not in request.session:
-#        return RedirectResponse(DISCORD_OAUTH2_URL)
-#    return await check_self_permission(request.session['token'], 981576035176964117)
+@app.get("/licensy/logout")
+async def logout(request: Request):
+    # clear session cookies
+    response = RedirectResponse(LOGIN_PAGE_URL)
+    request.session.clear()
+    return response
+
+    # @app.get("/test")
+    # async def _test_route(request: Request):
+    #    if 'token' not in request.session:
+    #        return RedirectResponse(DISCORD_OAUTH2_URL)
+    #    return await check_self_permission(request.session['token'], 981576035176964117)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=80)
