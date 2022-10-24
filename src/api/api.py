@@ -31,14 +31,12 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 def rateLimitHandler(request: Request, exc: RateLimitExceeded):
     response = JSONResponse(
-        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=429
+        {"error": True, "message": f"Rate limit exceeded: {exc.detail}", "data": {}}, status_code=429
     )
     response = request.app.state.limiter._inject_headers(
         response, request.state.view_rate_limit
     )
-    print(request.state.view_rate_limit)
-    response = templates.TemplateResponse(
-        "rate_limit.html", {'request': request, 'code': 429, 'message': response}, status_code=429)
+    #response = templates.TemplateResponse("rate_limit.html", {'request': request, 'code': 429, 'message': response}, status_code=429)
     return response
 
 
@@ -120,8 +118,17 @@ async def guild_route(request: Request, guild_id: str):
     guild_data = await get_guild_data(guild_id)
     if guild_data is None:
         return RedirectResponse('/licensy/dashboard')
-    products = await get_products(guild_id)
+    products = await get_products_from_guildId(guild_id)
     return templates.TemplateResponse('guild.html', {'request': request, 'guild': guild_data, 'products': products, 'token': base64.b64encode(bytes(request.session['token'], "utf-8"))})
+
+
+@app.get("/licensy/logout")
+async def logout(request: Request):
+    # clear session cookies
+    response = RedirectResponse(LOGIN_PAGE_URL)
+    request.session.clear()
+    return response
+
 
 # API PART
 
@@ -148,18 +155,26 @@ async def delete_product_route(request: Request, uuid: str, token: str):
         return JSONResponse({"success": "Product deleted"}, status_code=200)
 
 
-@app.get("/licensy/logout")
-async def logout(request: Request):
-    # clear session cookies
-    response = RedirectResponse(LOGIN_PAGE_URL)
-    request.session.clear()
-    return response
+@app.get('/licensy/api/get_product/{uuid}')
+@limiter.limit("2/10second")
+async def get_product(request: Request, uuid: str):
+    product = await get_product_data(uuid)
+    if product is None:
+        return JSONResponse({'error': 'Product not found', 'code': 404}, status_code=404)
+    return JSONResponse({
+                        "error": False,
+                        "message": "success",
+                        "data":
+                        {"uuid": product[0],
+                         "name": product[2],
+                         "description": product[4],
+                         "price": product[3]}
+                        }, status_code=200)
 
-    # @app.get("/test")
-    # async def _test_route(request: Request):
-    #    if 'token' not in request.session:
-    #        return RedirectResponse(DISCORD_OAUTH2_URL)
-    #    return await check_self_permission(request.session['token'], 981576035176964117)
-
+# @app.get("/test")
+# async def _test_route(request: Request):
+#    if 'token' not in request.session:
+#        return RedirectResponse(DISCORD_OAUTH2_URL)
+#    return await check_self_permission(request.session['token'], 981576035176964117)
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=80)

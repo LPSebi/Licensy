@@ -39,7 +39,7 @@ async def get_guild_data(guild_id: int):
             return await resp.json()
 
 
-async def get_products(guild_id: int):
+async def get_products_from_guildId(guild_id: int):
     async with aiosqlite.connect('./data/db.sqlite') as db:
         cursor = await db.execute('SELECT * FROM guilds WHERE id = ?', (guild_id,))
         if await cursor.fetchone() is None:
@@ -100,3 +100,13 @@ async def get_guildId_from_product_uuid(product_uuid):
             guild_id = (await current_guild.fetchone())[1]
             print(guild_id)
             return guild_id
+
+
+async def get_product_data(product_uuid):
+    async with aiosqlite.connect('./data/db.sqlite') as db:
+        cursor = await db.execute('SELECT * FROM products WHERE uuid = ?', (product_uuid,))
+        if await cursor.fetchone() is None:
+            return None
+        else:
+            current_product = await db.execute('SELECT * FROM products WHERE uuid = ?', (product_uuid,))
+            return await current_product.fetchone()
