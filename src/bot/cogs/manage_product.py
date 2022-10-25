@@ -15,7 +15,7 @@ class CreateProductModal(ui.Modal, title='Create Product'):
     description = ui.TextInput(
         label='Description of your product', placeholder='Ex: This Product does cool things (Max 100 characters)', style=discord.TextStyle.paragraph, required=False, max_length=100)
     price = ui.TextInput(label='Price of your product',
-                         placeholder='Ex: 10 (no floating numbers, Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
+                         placeholder='Ex: 10 (Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: discord.Interaction):
         try:
@@ -46,7 +46,7 @@ class EditProductModal(ui.Modal, title='Edit Product'):
     description = ui.TextInput(
         label='New description of your product', placeholder='Ex: This Product does cool things (Max 100 characters)', style=discord.TextStyle.paragraph, required=False, max_length=100)
     price = ui.TextInput(label='Price of your product',
-                         placeholder='Ex: 10 (no floating numbers, Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
+                         placeholder='Ex: 10 (Max 5 characters)', required=True, max_length=5, style=discord.TextStyle.short)
 
     async def on_submit(self, interaction: discord.Interaction):
         try:
