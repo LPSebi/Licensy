@@ -1,9 +1,11 @@
 
-from utils.constants import *
+from src.api.utils.constants import *
 from aiocache import cached
-from api import BOT_TOKEN
+import os
 import aiohttp
 import aiosqlite
+
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 
 async def get_user_guilds(token: str):

@@ -10,8 +10,8 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 import uvicorn
-from utils.constants import *
-from utils.utils import *
+from src.api.utils.constants import *
+from src.api.utils.utils import *
 from dotenv import load_dotenv
 import os
 import aiohttp
@@ -176,5 +176,3 @@ async def get_product(request: Request, uuid: str):
 #    if 'token' not in request.session:
 #        return RedirectResponse(DISCORD_OAUTH2_URL)
 #    return await check_self_permission(request.session['token'], 981576035176964117)
-if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=80)
